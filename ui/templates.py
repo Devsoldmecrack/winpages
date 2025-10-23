@@ -8,7 +8,7 @@ TEMPLATES_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "templa
 class TemplatePicker(QDialog):
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setWindowTitle("Vorlage auswählen")
+        self.setWindowTitle("Select template")
         self.resize(520, 420)
         v = QVBoxLayout(self)
 
@@ -16,8 +16,8 @@ class TemplatePicker(QDialog):
         v.addWidget(self.list, 1)
 
         btns = QHBoxLayout()
-        self.ok = QPushButton("Verwenden")
-        self.cancel = QPushButton("Abbrechen")
+        self.ok = QPushButton("Use")
+        self.cancel = QPushButton("Cancel")
         self.ok.clicked.connect(self.accept)
         self.cancel.clicked.connect(self.reject)
         btns.addStretch(1)

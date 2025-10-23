@@ -51,12 +51,12 @@ class HomeWindow(QMainWindow):
         title.setStyleSheet("color: white")
         hv.addWidget(title, 0, Qt.AlignHCenter)
 
-        btn = QPushButton("Jetzt schreiben")
+        btn = QPushButton("Start writing")
         btn.setStyleSheet(PRIMARY_BUTTON_QSS)
         btn.clicked.connect(self.open_editor)
         hv.addWidget(btn, 0, Qt.AlignHCenter)
 
-        sub = QPushButton("Vorlage auswählen")
+        sub = QPushButton("Choose template")
         sub.setFlat(True)
         sub.setStyleSheet("color: rgb(150, 170, 200); font-weight: 600;")
         sub.clicked.connect(self.open_templates)
@@ -82,7 +82,7 @@ class HomeWindow(QMainWindow):
 
         top = QHBoxLayout()
         search = QLineEdit()
-        search.setPlaceholderText("Suchen…")
+        search.setPlaceholderText("Search…")
         search.setStyleSheet(SEARCH_QSS)
         # debounce: 200ms after typing stops
         self._searchTimer = QTimer(self)
@@ -91,7 +91,7 @@ class HomeWindow(QMainWindow):
         search.textChanged.connect(lambda _: self._searchTimer.start())
         self._searchTimer.timeout.connect(self.refresh)
         top.addWidget(search)
-        import_btn = QPushButton("Importieren")
+        import_btn = QPushButton("Import")
         import_btn.clicked.connect(self.import_files)
         top.addWidget(import_btn)
         sv.addLayout(top)
@@ -111,7 +111,7 @@ class HomeWindow(QMainWindow):
         self.refresh()
 
     def import_files(self):
-        files, _ = QFileDialog.getOpenFileNames(self, "Dateien importieren", str(os.path.expanduser("~")), "Dokumente (*.html *.htm *.rtf *.txt);;Alle Dateien (*.*)")
+        files, _ = QFileDialog.getOpenFileNames(self, "Import files", str(os.path.expanduser("~")), "Documents (*.html *.htm *.rtf *.txt);;All Files (*.*)")
         changed = False
         for f in files:
             try:
@@ -191,9 +191,9 @@ class HomeWindow(QMainWindow):
         def context_menu(event):
             menu = QMenu(f)
             menu.setStyleSheet(MENU_QSS)
-            act_open = menu.addAction("Öffnen")
-            act_rename = menu.addAction("Umbenennen…")
-            act_reveal = menu.addAction("Im Explorer anzeigen")
+            act_open = menu.addAction("Open")
+            act_rename = menu.addAction("Rename…")
+            act_reveal = menu.addAction("Reveal in Explorer")
             chosen = menu.exec(event.globalPos())
             if chosen == act_open:
                 self.open_path(f._doc_path)
@@ -231,7 +231,7 @@ class HomeWindow(QMainWindow):
         if not path or not os.path.exists(path):
             return
         base = os.path.basename(path)
-        new_name, ok = QInputDialog.getText(self, "Umbenennen", "Neuer Name:", text=base)
+        new_name, ok = QInputDialog.getText(self, "Rename", "New name:", text=base)
         if not ok or not new_name.strip():
             return
         # Keep extension if user removed it accidentally

@@ -1,18 +1,18 @@
 # WinPages
 
-Elegantes, modulares Schreib-Tool (ähnlich Apple Pages) mit PySide6. Fokus auf UX, RichText, Vorlagen, Verlauf mit Vorschaubildern und einem dunklen Blau/Grau-Theme.
+An elegant, modular writing tool (Pages-like) built with PySide6. Focus on UX, rich text, templates, recent documents with thumbnails, and a dark blue/gray theme.
 
 ## Features
-- Startscreen mit Hero-Card, Vorlagen-Picker und Verlauf (mit Thumbnails)
-- Editor mit RichText (`QTextEdit`): Schrift, Größe, Fett/Kursiv/Unterstr., Listen, Ausrichtung, Textfarbe
-- Dateioperationen: Neu, Öffnen, Speichern, Speichern unter, Export als PDF
-- Auto-Speichern für neue Dokumente in `~/.winpages/documents/` mit eindeutigem Namen
-- Verlaufsspeicher in `~/.winpages/recents.json` + Thumbnail-Cache in `~/.winpages/thumbs/`
-- Importieren-Button und Drag&Drop vom Explorer auf die Startseite
-- Kontextmenü auf Dokument-Karten: Öffnen, Umbenennen, Im Explorer anzeigen
-- Dunkles Blau/Grau-Theme, 3D-Schatten, SVG-Toolbar-Icons
+- Start screen with hero card, template picker, and recents (with thumbnails)
+- Rich text editor (`QTextEdit`): font family/size, bold/italic/underline, bulleted/numbered lists, alignment, text color
+- File operations: New, Open, Save, Save As, Export as PDF
+- Auto-save for new documents into `~/.winpages/documents/` with unique names
+- Recents store in `~/.winpages/recents.json` + thumbnail cache in `~/.winpages/thumbs/`
+- Import button and drag & drop from Explorer onto the home screen
+- Card context menu: Open, Rename, Reveal in Explorer
+- Dark blue/gray theme, 3D shadows, SVG toolbar icons
 
-## Projektstruktur
+## Project structure
 ```
 WinPages/
   assets/
@@ -32,44 +32,45 @@ WinPages/
   requirements.txt
 ```
 
-## Lokale Entwicklung
+## Local development
 ```bash
 pip install -r requirements.txt
 python main.py
 ```
 
-## Build (Windows, Portable EXE)
-Wir nutzen PyInstaller. Die GitHub Action erzeugt automatisch eine portable EXE und ein ZIP der `dist/`-Ausgabe.
+## Build (Windows, portable EXE)
+We use PyInstaller. The GitHub Action builds a portable EXE and a zipped `dist/` output automatically.
 
-Manuell lokal:
+Manual local build:
 ```bash
 pip install pyinstaller
-# (optional) ICO aus SVG generieren – die Action erledigt das automatisch
+# (optional) generate ICO from SVG – CI does this automatically
 python tools/generate_ico.py
 
 pyinstaller ^
   --noconfirm --windowed ^
   --name WinPages ^
   --icon assets/app_icon.ico ^
+  --hidden-import PySide6.QtSvg --collect-submodules PySide6 ^
   --add-data "assets;assets" ^
   --add-data "templates;templates" ^
   main.py
 ```
-Die EXE liegt dann unter `dist/WinPages/WinPages.exe`.
+The EXE will be at `dist/WinPages/WinPages.exe`.
 
 ## CI/CD
 - Workflow: `.github/workflows/build.yml`
-  - Läuft auf `windows-latest`
-  - Installiert Abhängigkeiten
-  - Generiert `assets/app_icon.ico` aus `assets/app_icon.svg`
-  - Baut mit PyInstaller
-  - Lädt Artefakte hoch: `WinPages.exe` + `WinPages.zip`
+  - Runs on `windows-latest`
+  - Installs dependencies
+  - Generates `assets/app_icon.ico` from `assets/app_icon.svg`
+  - Builds with PyInstaller
+  - Uploads artifacts: `WinPages.exe`, `WinPages-dist/`, and `WinPages.zip`
 
 ## Installer (optional)
-Für einen klassischen Windows-Installer (Startmenü, Deinstallations-Eintrag) kannst du Inno Setup verwenden. Eine Beispiel-`InnoSetup.iss` kann später ergänzt werden; die Action kann dann `iscc` aufrufen und das `.exe`-Setup als Artefakt hochladen.
+For a classic Windows installer (Start Menu entry, uninstall), use Inno Setup. We can add a sample `InnoSetup.iss` and a CI step to run `iscc` and publish the installer.
 
-## Repo-Name-Vorschlag
-- `winpages` oder `winpages-notes`
+## Repository name suggestion
+- `winpages` or `winpages-notes`
 
-## Lizenz
-Füge eine Lizenz hinzu (z. B. MIT), je nach Bedarf.
+## License
+Add a license (e.g., MIT) as needed.

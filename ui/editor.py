@@ -32,16 +32,16 @@ class EditorWindow(QMainWindow):
         tb.setStyleSheet(EDITOR_TOOLBAR_QSS)
         self.addToolBar(tb)
 
-        act_new = QAction(QIcon(self._icon_path("new.svg")), "Neu", self)
+        act_new = QAction(QIcon(self._icon_path("new.svg")), "New", self)
         act_new.triggered.connect(self.new_document)
         tb.addAction(act_new)
 
-        act_open = QAction(QIcon(self._icon_path("open.svg")), "Öffnen", self)
+        act_open = QAction(QIcon(self._icon_path("open.svg")), "Open", self)
         act_open.setShortcut(QKeySequence.Open)
         act_open.triggered.connect(self.open_dialog)
         tb.addAction(act_open)
 
-        act_save = QAction(QIcon(self._icon_path("save.svg")), "Speichern", self)
+        act_save = QAction(QIcon(self._icon_path("save.svg")), "Save", self)
         act_save.setShortcut(QKeySequence.Save)
         act_save.triggered.connect(self.save)
         tb.addAction(act_save)
@@ -60,19 +60,19 @@ class EditorWindow(QMainWindow):
         self.font_size.setCurrentIndex(2)
         self._apply_font_size()
 
-        act_bold = QAction(QIcon(self._icon_path("bold.svg")), "Fett", self)
+        act_bold = QAction(QIcon(self._icon_path("bold.svg")), "Bold", self)
         act_bold.setShortcut(QKeySequence.Bold)
         act_bold.setCheckable(True)
         act_bold.triggered.connect(lambda: self._toggle_weight(QFont.Bold))
         tb.addAction(act_bold)
 
-        act_italic = QAction(QIcon(self._icon_path("italic.svg")), "Kursiv", self)
+        act_italic = QAction(QIcon(self._icon_path("italic.svg")), "Italic", self)
         act_italic.setShortcut(QKeySequence.Italic)
         act_italic.setCheckable(True)
         act_italic.triggered.connect(self._toggle_italic)
         tb.addAction(act_italic)
 
-        act_underline = QAction(QIcon(self._icon_path("underline.svg")), "Unterstr.", self)
+        act_underline = QAction(QIcon(self._icon_path("underline.svg")), "Underline", self)
         act_underline.setShortcut(QKeySequence.Underline)
         act_underline.setCheckable(True)
         act_underline.triggered.connect(self._toggle_underline)
@@ -80,35 +80,35 @@ class EditorWindow(QMainWindow):
 
         tb.addSeparator()
 
-        act_bullets = QAction(QIcon(self._icon_path("bullet.svg")), "Aufzählung", self)
+        act_bullets = QAction(QIcon(self._icon_path("bullet.svg")), "Bulleted List", self)
         act_bullets.triggered.connect(self._toggle_bullets)
         tb.addAction(act_bullets)
 
-        act_num = QAction(QIcon(self._icon_path("number.svg")), "Nummeriert", self)
+        act_num = QAction(QIcon(self._icon_path("number.svg")), "Numbered List", self)
         act_num.triggered.connect(self._toggle_numbers)
         tb.addAction(act_num)
 
         tb.addSeparator()
 
-        act_color = QAction(QIcon(self._icon_path("color.svg")), "Farbe", self)
+        act_color = QAction(QIcon(self._icon_path("color.svg")), "Color", self)
         act_color.triggered.connect(self._choose_color)
         tb.addAction(act_color)
 
-        act_left = QAction(QIcon(self._icon_path("align-left.svg")), "Links", self)
+        act_left = QAction(QIcon(self._icon_path("align-left.svg")), "Left", self)
         act_left.triggered.connect(lambda: self._set_align(Qt.AlignLeft))
         tb.addAction(act_left)
 
-        act_center = QAction(QIcon(self._icon_path("align-center.svg")), "Zentriert", self)
+        act_center = QAction(QIcon(self._icon_path("align-center.svg")), "Center", self)
         act_center.triggered.connect(lambda: self._set_align(Qt.AlignHCenter))
         tb.addAction(act_center)
 
-        act_right = QAction(QIcon(self._icon_path("align-right.svg")), "Rechts", self)
+        act_right = QAction(QIcon(self._icon_path("align-right.svg")), "Right", self)
         act_right.triggered.connect(lambda: self._set_align(Qt.AlignRight))
         tb.addAction(act_right)
 
         tb.addSeparator()
 
-        act_export = QAction(QIcon(self._icon_path("pdf.svg")), "PDF", self)
+        act_export = QAction(QIcon(self._icon_path("pdf.svg")), "Export PDF", self)
         act_export.triggered.connect(self.export_pdf)
         tb.addAction(act_export)
 
@@ -126,9 +126,9 @@ class EditorWindow(QMainWindow):
                 self.text.setPlainText(data)
             # Do not bind to template file path
             self._path = None
-            self.setWindowTitle("Unbenannt – WinPages")
+            self.setWindowTitle("Untitled – WinPages")
         except Exception as e:
-            QMessageBox.critical(self, "Fehler", str(e))
+            QMessageBox.critical(self, "Error", str(e))
 
     def _merge_format_on_selection(self, fmt: QTextCharFormat):
         cursor = self.text.textCursor()
@@ -190,10 +190,10 @@ class EditorWindow(QMainWindow):
     def new_document(self):
         self.text.clear()
         self._path = None
-        self.setWindowTitle("Unbenannt – WinPages")
+        self.setWindowTitle("Untitled – WinPages")
 
     def open_dialog(self):
-        fn, _ = QFileDialog.getOpenFileName(self, "Dokument öffnen", os.path.expanduser("~"), "Dokumente (*.html *.htm *.rtf *.txt)")
+        fn, _ = QFileDialog.getOpenFileName(self, "Open Document", os.path.expanduser("~"), "Documents (*.html *.htm *.rtf *.txt);;All Files (*.*)")
         if fn:
             self.open_file(fn)
 
@@ -211,12 +211,12 @@ class EditorWindow(QMainWindow):
             touch_recent(path)
             ensure_thumbnail_for_file(path)
         except Exception as e:
-            QMessageBox.critical(self, "Fehler", str(e))
+            QMessageBox.critical(self, "Error", str(e))
 
     def save(self):
         if not self._path:
             # Auto-save new docs into app documents folder with a unique name
-            suggested = unique_path("Dokument.html")
+            suggested = unique_path("Document.html")
             self._path = suggested
             ok = self._save_to(self._path)
             if ok:
@@ -228,7 +228,7 @@ class EditorWindow(QMainWindow):
         return ok
 
     def save_as(self):
-        fn, _ = QFileDialog.getSaveFileName(self, "Speichern unter", self._path or os.path.expanduser("~"), "HTML (*.html);;RTF (*.rtf);;Text (*.txt)")
+        fn, _ = QFileDialog.getSaveFileName(self, "Save As", self._path or os.path.expanduser("~"), "HTML (*.html);;RTF (*.rtf);;Text (*.txt)")
         if fn:
             self._path = fn
             ok = self._save_to(fn)
@@ -253,11 +253,11 @@ class EditorWindow(QMainWindow):
             ensure_thumbnail_for_content(data, is_html, thumb_path(path))
             return True
         except Exception as e:
-            QMessageBox.critical(self, "Fehler", str(e))
+            QMessageBox.critical(self, "Error", str(e))
             return False
 
     def export_pdf(self):
-        fn, _ = QFileDialog.getSaveFileName(self, "Als PDF exportieren", os.path.expanduser("~"), "PDF (*.pdf)")
+        fn, _ = QFileDialog.getSaveFileName(self, "Export as PDF", os.path.expanduser("~"), "PDF (*.pdf)")
         if not fn:
             return
         try:
@@ -270,4 +270,4 @@ class EditorWindow(QMainWindow):
             doc = self.text.document()
             doc.print_(printer)
         except Exception as e:
-            QMessageBox.critical(self, "Fehler", str(e))
+            QMessageBox.critical(self, "Error", str(e))
