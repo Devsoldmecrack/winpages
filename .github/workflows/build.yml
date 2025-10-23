@@ -1,0 +1,65 @@
+name: build-windows
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pyinstaller
+
+      - name: Generate ICO
+        run: |
+          python tools/generate_ico.py
+
+      - name: Build with PyInstaller
+        run: |
+          pyinstaller ^
+            --noconfirm --windowed ^
+            --name WinPages ^
+            --icon assets/app_icon.ico ^
+            --hidden-import PySide6.QtSvg ^
+            --collect-submodules PySide6 ^
+            --add-data "assets;assets" ^
+            --add-data "templates;templates" ^
+            main.py
+
+      - name: Zip dist
+        run: |
+          powershell -Command "Compress-Archive -Path 'dist/WinPages/*' -DestinationPath 'dist/WinPages.zip' -Force"
+
+      - name: Archive dist
+        uses: actions/upload-artifact@v4
+        with:
+          name: WinPages-dist
+          path: dist/WinPages/
+
+      - name: Portable EXE
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: WinPages.exe
+          path: dist/WinPages/WinPages.exe
+
+      - name: Zipped portable
+        uses: actions/upload-artifact@v4
+        with:
+          name: WinPages.zip
+          path: dist/WinPages.zip
