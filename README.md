@@ -1,4 +1,4 @@
-# WinPages
+# WinPages (Beta not full release)
 
 An elegant, modular writing tool (Pages-like) built with PySide6. Focus on UX, rich text, templates, recent documents with thumbnails, and a dark blue/gray theme.
 
